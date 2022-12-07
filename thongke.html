@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<script src="./js/create_order.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<body>
+
+<div class="row" style="margin: auto;width: 80%;">
+    <input class="form-control" type="month" id="month_year" name="month_year"
+    min="2021-01" value="2022-11" onchange="thongke()"/>
+</div>
+<hr>
+<h3 style="text-align: center;">Thống kê số lượng bán sản phẩm theo tháng</h3>
+<div>
+  <canvas id="myChart" style="width:100%;max-width:1500px; margin-left: 0px;"></canvas>
+</div>
+
+
+</body>
+<script>
+    input = document.getElementById("month_year").value;
+    var xmlhttp = new XMLHttpRequest();
+       xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            if(this.responseText != "") {
+                debugger
+              var data = JSON.parse(this.responseText);
+              var xValues = [];
+              var yValues = []; 
+              var max = 0;
+
+                    for (var i in data) {
+                      xValues.push(data[i].tenSP);
+                      yValues.push(data[i].soluong);
+                      max += parseInt(data[i].soluong);
+                    }
+              
+                    new Chart("myChart", {
+                      type: "horizontalBar",
+                      data: {
+                      labels: xValues,
+                      datasets: [{
+                        backgroundColor: "blue",
+                        data: yValues
+                      }]
+                    },
+                      options: {
+                        legend: {display: false},
+                        title: {
+                          display: true,
+                          text: "thống kê"
+                        },
+                        scales: {
+                          xAxes: [{ticks: {min: -1, max:max}}]
+                        }
+                      }
+                    });
+            }  
+            else {
+                
+            }
+          } 
+        };
+        xmlhttp.open("GET", "thongke.php?keywork=" + input, true);
+        xmlhttp.send();
+</script>
+</html>
+
+
